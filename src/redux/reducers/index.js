@@ -5,8 +5,8 @@ import {
     combineReducers
 } from 'redux'
 
-import name from './aaa'
+import user from './user'
 
 export default combineReducers({
-    name
+    user
 })

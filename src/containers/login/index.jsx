@@ -1,66 +1,57 @@
 import React, { Component } from "react";
-import { Form, Input, Button, Icon, message } from "antd";
-import axios from 'axios'
-
+import { Form, Input, Button, Icon } from "antd";
+import { connect } from "react-redux";
+import { getUserAsync } from "../../redux/action-creators/user";
+import { setItem } from "../../utils/storage";
+// import { reqLogin } from "../../api";
 import logo from "./logo.png";
 import "./index.less";
 
 const { Item } = Form;
-
+@connect(null, { getUserAsync })
 @Form.create()
-
 class Login extends Component {
+  validator = (rule, value, callback) => {
+    const name = rule.field === "username" ? "用户名" : "密码";
 
-    validator = (rule,value,callback)=>{
-
-        const name = rule.field === 'username' ? "用户名" : "密码"
-        
-        if(!value){
-            callback(name+'不能为空😊')
-        }else if(value.length < 4){
-            callback(name+'长度不能小于4位嗷😝~')
-        }else if (value.length > 13) {
-            callback(name+'长度不能大于十三位嗷🐷')
-        }else if (!/\w/.test(value)) {
-            callback(name+'只能包含数字·字母·下划线~👴')
-        }else{
-            callback();
-        }
+    if (!value) {
+      callback(name + "不能为空😊");
+    } else if (value.length < 4) {
+      callback(name + "长度不能小于4位嗷😝~");
+    } else if (value.length > 13) {
+      callback(name + "长度不能大于十三位嗷🐷");
+    } else if (!/\w/.test(value)) {
+      callback(name + "只能包含数字·字母·下划线~👴");
+    } else {
+      callback();
     }
+  };
 
-    login = (e)=>{
-        e.preventDefault();
-        const { form } = this.props
+  login = e => {
+    e.preventDefault();
+    const { form } = this.props;
 
-        //校验 获取value 错误信息
-        form.validateFields((err,values)=>{
-            console.log(err,values)
-            
-            if (!err) {
-                axios.post('http://localhost:5000/api/login',values)
-                .then((response)=>{
-                  
-                    //判断值
-                    if (response.data.status === 0) {
-                          //登录成功
-                    this.props.history.push('/')
-                    }else{
-                        message.error(response.data.msg)
-                        //清空
-                        this.props.form.resetFields(['password'])
-                    }
+    //校验 获取value 错误信息
+    form.validateFields((err, values) => {
+      // console.log(err, values);
 
-                })
-                .catch((err)=>{
-                    //错误
-                    console.log(err);
-                    message.error('网络连接出错辣！请刷新再试试扒')
-                    this.props.form.resetFields(['password'])
+      if (!err) {
+        const { username, password } = values;
 
-                })
-            }
-        })
-    }
+        this.props
+          .getUserAsync(username, password)
+
+          .then(response => {
+            // console.log(response);
+            setItem("user", response);
+            this.props.history.push("/");
+          })
+          .catch(err => {
+            form.resetFields(["password"]);
+          });
+      }
+    });
+  };
 
   render() {
     //getFieldDecorator是一个高阶组件
@@ -75,11 +66,10 @@ class Login extends Component {
 
         <section className="login-section">
           <h3>用户登录</h3>
-          <Form onSubmit= {this.login} >
+          <Form onSubmit={this.login}>
             <Item>
               {getFieldDecorator("username", {
                 rules: [
-                    
                   /* {
                     required: true, //必填
                     message: "请输入用户名" //错误提示
@@ -136,4 +126,6 @@ class Login extends Component {
 }
 
 //高阶组件 复用代码
-export default (Login);
+// connect(null, { getUserAsync })(Login);
+
+export default Login;
