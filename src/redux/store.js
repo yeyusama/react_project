@@ -1,4 +1,3 @@
-
 import {
     createStore,
     applyMiddleware
@@ -9,6 +8,5 @@ import {
 } from 'redux-devtools-extension';
 import reducers from './reducers';
 
-const middleware = process.env.NODE_ENV === 'development' ? composeWithDevTools(applyMiddleware(thunk)) : applyMiddleware(thunk);
-
-export default createStore(reducers,middleware);
+const middleware = process.env.NODE_ENV === 'development' ? composeWithDevTools(applyMiddleware(thunk)) : applyMiddleware(thunk)
+export default createStore(reducers, middleware)

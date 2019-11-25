@@ -1,12 +1,12 @@
-/*
-  根据prevState和action来生成newState
+/* 
+    生成新的状态
 */
 import {
     combineReducers
-  } from 'redux';
-  
-  import user from './user';
-  
-  export default combineReducers({
-    user
-  })
+} from 'redux'
+
+import name from './aaa'
+
+export default combineReducers({
+    name
+})
