@@ -4,6 +4,13 @@ import {
 } from "antd";
 import store from '../redux/store'
 import codeMessage from "../config/code-message";
+import {
+  removeItem
+} from '../utils/storage';
+import history from '../utils/history';
+import {
+  removeUserSuccess
+} from '../redux/action-creators/user'
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/api", // 基础路径：所有请求的公共路径
@@ -25,9 +32,9 @@ axiosInstance.interceptors.request.use(config => {
       }, "")
       .substring(1);
   }
-    //读取数据
+  //读取数据
   const {
-    user:{
+    user: {
       token
     }
   } = store.getState();
@@ -62,6 +69,17 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       // 说明服务器返回了响应
       errorMessage = codeMessage[error.response.status] || "未知错误";
+
+      if (error.response.status === 401) {
+        //token存在问题
+        removeItem();
+        store.dispatch(removeUserSuccess());
+        history.push('/login');
+
+      } else {
+
+      }
+
     } else {
       // 说明服务器没有返回响应，请求还没给服务器 / 还没有接受到服务器的响应 请求就终止了
       if (error.message.indexOf("Network Error") !== -1) {
