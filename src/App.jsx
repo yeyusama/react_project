@@ -6,7 +6,6 @@ import history from './utils/history'
 
 import routes from "./config/routes";
 import './index.less'
-import { from } from "rxjs";
 
 export default class App extends Component {
   render() {

@@ -5,7 +5,7 @@ import { getUserAsync } from "../../redux/action-creators/user";
 import { setItem } from "../../utils/storage";
 import withCheckLogin from '../with-check-login'
 // import { reqLogin } from "../../api";
-import logo from "./logo.png";
+import logo from "../../assets/logo.png";
 import "./index.less";
 
 const { Item } = Form;
